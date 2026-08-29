@@ -1,0 +1,12 @@
+window.addEventListener('load',()=>setTimeout(()=>document.querySelector('.loader')?.classList.add('done'),850));
+const $$=s=>document.querySelectorAll(s),$=s=>document.querySelector(s);let bag=[];
+$$('.filters button').forEach(b=>b.onclick=()=>{$$('.filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.filter;$$('.product').forEach(c=>{const show=f==='all'||c.dataset.type===f;c.style.display=show?'block':'none';if(show)c.animate([{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'none'}],{duration:450,easing:'cubic-bezier(.2,.8,.2,1)'})})});
+function openProduct(card){$('#modalName').textContent=card.dataset.name;$('#modalPrice').textContent='$'+card.dataset.price;$('#modalPic').style.backgroundImage=`url("${card.dataset.img}")`;$('#modal').classList.add('open')}
+$$('.quick').forEach(b=>b.onclick=e=>{e.stopPropagation();openProduct(b.closest('.product'))});$$('.product').forEach(c=>c.onclick=()=>openProduct(c));
+function closeModal(){$('#modal').classList.remove('open')}$('.close').onclick=closeModal;$('.backdrop').onclick=closeModal;document.addEventListener('keydown',e=>e.key==='Escape'&&closeModal());
+function add(name,price){bag.push({name,price});renderBag();$('#bagPanel').classList.add('open');$('#bagCount').textContent=bag.length}
+$$('.add').forEach(b=>b.onclick=e=>{e.stopPropagation();const c=b.closest('.product');add(c.dataset.name,+c.dataset.price)});$('#modalAdd').onclick=()=>{add($('#modalName').textContent,+$('#modalPrice').textContent.replace('$',''));closeModal()};
+function renderBag(){const el=$('#bagItems');el.innerHTML=bag.length?bag.map((x,i)=>`<div class="bag-item"><span>${x.name}</span><strong>$${x.price}</strong></div>`).join(''):'<p style="color:#777;font-size:12px">Your bag is waiting for a first move.</p>';$('#bagTotal').textContent='$'+bag.reduce((a,x)=>a+x.price,0)}
+$('#bagBtn').onclick=()=>$('#bagPanel').classList.add('open');$('.bag-close').onclick=()=>$('#bagPanel').classList.remove('open');
+$('#signup').onsubmit=e=>{e.preventDefault();$('#formMsg').textContent='You are on the list. Welcome to the next drop.';e.target.reset()};
+$$('a[href^="#"]').forEach(a=>a.onclick=e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}});
